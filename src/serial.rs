@@ -3,10 +3,7 @@ use embedded_hal::blocking::serial as bserial;
 use embedded_hal::serial;
 use microbit::{
     board::UartPins,
-    hal::{
-        pac::UART0,
-        uarte::{self, Baudrate, Error, Instance, Parity, Uarte, UarteRx, UarteTx},
-    },
+    hal::uarte::{self, Baudrate, Error, Instance, Parity, Uarte, UarteRx, UarteTx},
 };
 
 static mut TX_BUF: [u8; 1] = [0; 1];
@@ -30,8 +27,12 @@ impl<T: Instance> UartePort<T> {
         ))
     }
 
-    pub fn write(&mut self, msg: &str) {
-        write!(self, "{}", msg).unwrap();
+    pub fn write<F: fmt::Display>(&mut self, msg: F) {
+        write!(self, "{}\r\n", msg).unwrap();
+    }
+
+    pub fn stats(&mut self, max: u16, sum: u64, count: u64) {
+        write!(self, "MAX: {}, SUM: {}, COUNT: {}\r\n", max, sum, count).unwrap();
     }
 }
 

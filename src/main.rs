@@ -37,9 +37,10 @@ fn main() -> ! {
     let mut sum: u64 = 0;
     let mut max_value: u16 = 0;
     let mut serial = UartePort::create(board.UARTE0, board.uart);
+    display.show(&mut timer, led::A, 1000);
 
     loop {
-        serial.write("Staring loop\r\n");
+        serial.write("Staring loop");
         let mic_value = saadc
             .read(&mut mic_in)
             .map_err(|_e| serial.write("could not read from microphone\r\t"))
@@ -48,8 +49,9 @@ fn main() -> ! {
         max_value += max_value.max(mic_value);
         sum += mic_value as u64;
         count += 1;
+        serial.stats(max_value, sum, count);
 
-        if count % 100 == 0 {
+        if count % 4 == 0 {
             let avg = (sum / count) as u16;
             let image = [
                 [if max_value > avg + 100 { 1 } else { 0 }; 5],

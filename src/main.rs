@@ -1,9 +1,11 @@
 #![no_main]
 #![no_std]
 
+mod counter;
 mod led;
 mod serial;
 use cortex_m_rt::entry;
+use counter::IncrementalCounter;
 use panic_rtt_target as _;
 use rtt_target::rtt_init_print;
 // use defmt_rtt as _;
@@ -51,7 +53,7 @@ fn main() -> ! {
         count += 1;
         serial.stats(max_value, sum, count);
 
-        if count % 4 == 0 {
+        if count.every(10) {
             let avg = (sum / count) as u16;
             let image = [
                 [if max_value > avg + 100 { 1 } else { 0 }; 5],

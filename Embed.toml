@@ -1,0 +1,13 @@
+[default.general]
+chip = "nrf52833_xxAA"
+
+[default.reset]
+halt_afterwards = false
+
+[default.rtt]
+# enable for minicom
+enabled = true
+
+[default.gdb]
+# enable to make cargo embed hold open.
+enabled = true
